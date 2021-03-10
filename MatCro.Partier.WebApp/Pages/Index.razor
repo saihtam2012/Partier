@@ -1,0 +1,24 @@
+﻿@page "/"
+
+<h1>Partier</h1>
+
+<h2>Alle partier</h2>
+<ul>
+    @{
+        Kerne.PartiSpil p = new Kerne.PartiSpil();
+        @foreach (var parti in p.HentPartier())
+        {
+            <li>@parti</li>
+        }
+    }
+</ul>
+
+<h2>Alle partiledere</h2>
+<ul>
+    @{
+        @foreach (var pl in p.HentPartiledere())
+        {
+            <li>@pl</li>
+        }
+    }
+</ul>
