@@ -1,9 +1,0 @@
-C:\MatCro\MatCro.Partier\MatCro.Partier.Kerne\bin\Debug\netcoreapp3.1\MatCro.Partier.Kerne.deps.json
-C:\MatCro\MatCro.Partier\MatCro.Partier.Kerne\bin\Debug\netcoreapp3.1\MatCro.Partier.Kerne.dll
-C:\MatCro\MatCro.Partier\MatCro.Partier.Kerne\bin\Debug\netcoreapp3.1\MatCro.Partier.Kerne.pdb
-C:\MatCro\MatCro.Partier\MatCro.Partier.Kerne\obj\Debug\netcoreapp3.1\MatCro.Partier.Kerne.csprojAssemblyReference.cache
-C:\MatCro\MatCro.Partier\MatCro.Partier.Kerne\obj\Debug\netcoreapp3.1\MatCro.Partier.Kerne.AssemblyInfoInputs.cache
-C:\MatCro\MatCro.Partier\MatCro.Partier.Kerne\obj\Debug\netcoreapp3.1\MatCro.Partier.Kerne.AssemblyInfo.cs
-C:\MatCro\MatCro.Partier\MatCro.Partier.Kerne\obj\Debug\netcoreapp3.1\MatCro.Partier.Kerne.csproj.CoreCompileInputs.cache
-C:\MatCro\MatCro.Partier\MatCro.Partier.Kerne\obj\Debug\netcoreapp3.1\MatCro.Partier.Kerne.dll
-C:\MatCro\MatCro.Partier\MatCro.Partier.Kerne\obj\Debug\netcoreapp3.1\MatCro.Partier.Kerne.pdb
