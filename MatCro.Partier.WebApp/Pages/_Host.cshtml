@@ -11,12 +11,19 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Partier</title>
-    <base href="~/" />        
+    <base href="~/" />
+    <link href="~/lib/tailwindcss/tailwind.min.css" rel="stylesheet" />
+    <link href="~/styles/style.css" rel="stylesheet" />
 </head>
 <body>
     <app>
         <component type="typeof(App)" render-mode="ServerPrerendered" />
     </app>
     <script src="_framework/blazor.server.js"></script>
+    <script>
+        Blazor.defaultReconnectionHandler._reconnectCallback = function (d) {
+            document.location.reload();
+        }
+    </script>
 </body>
 </html>

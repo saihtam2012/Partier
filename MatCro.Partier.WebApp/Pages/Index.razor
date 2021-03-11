@@ -1,24 +1,82 @@
 ﻿@page "/"
 
-<h1>Partier</h1>
+<div class="pl-5 pr-5 bg-blue-200">
+    <div class=" min-h-screen flex items-center justify-center">
+        <div class="grid grid-cols-2 gap-2">
+            @for (int i = 0; i < partier.Length; i++)
+            {
+                int id = i;
+                <div @onclick="@(()=> partiKlik(id))" class="spildiv @partierFarver[i] p-5 rounded text-center">
+                    @partier[i]
+                </div>
+                <div @onclick="@(()=> lederKlik(id))" class="spildiv @ledereFarver[i] p-5 rounded text-center">
+                    @ledere[i]
+                </div>
+            }
+        </div>
+    </div>
+</div>
 
-<h2>Alle partier</h2>
-<ul>
-    @{
+@code{
+
+    public string[] partier { get; set; }
+    public string[] ledere { get; set; }
+    public string[] partierFarver { get; set; }
+    public string[] ledereFarver { get; set; }
+    public int? valgtParti = null;
+    public int? valgtLeder = null;
+
+    protected override void OnInitialized()
+    {
         Kerne.PartiSpil p = new Kerne.PartiSpil();
-        @foreach (var parti in p.HentPartier())
-        {
-            <li>@parti</li>
-        }
+        partier = p.HentPartier();
+        ledere = p.HentPartiledere();
+        partierFarver = new string[partier.Length];
+        ledereFarver = new string[partier.Length];
+        farveParti();
+        farveLeder();
+        base.OnInitialized();
     }
-</ul>
 
-<h2>Alle partiledere</h2>
-<ul>
-    @{
-        @foreach (var pl in p.HentPartiledere())
+    void partiKlik(int id)
+    {
+        if (id == valgtParti)
+            valgtParti = null;
+        else
+            valgtParti = id;
+        farveParti();
+    }
+
+    void lederKlik(int id)
+    {
+        if (id == valgtLeder)
+            valgtLeder = null;
+        else
+            valgtLeder = id;
+        farveLeder();
+    }
+
+    public void farveParti()
+    {
+        for (int i = 0; i < partierFarver.Length; i++)
         {
-            <li>@pl</li>
+            partierFarver[i] = "bg-white";
+        }
+        if (valgtParti != null)
+        {
+            partierFarver[valgtParti.Value] = "bg-yellow-100";
         }
     }
-</ul>
+
+    public void farveLeder()
+    {
+        for (int i = 0; i < ledere.Length; i++)
+        {
+            ledereFarver[i] = "bg-white";
+        }
+        if (valgtLeder != null)
+        {
+            ledereFarver[valgtLeder.Value] = "bg-yellow-100";
+        }
+    }
+}
