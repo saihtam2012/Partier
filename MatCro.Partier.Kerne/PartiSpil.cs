@@ -7,6 +7,67 @@ namespace MatCro.Partier.Kerne
     public class PartiSpil
     {
 
+        public bool PasserSammen(string parti, string leder)
+        {
+            string[] partier = HentPartier();
+            string[] partiledere = HentPartiledere();
+            int p = FindStringIArray(parti, partier);
+            int pl = FindStringIArray(leder, partiledere);
+            if (p == pl)
+            {
+                return true;
+
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+        public int FindStringIArray(string navn, string[] array)
+        {
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (navn == array[i])
+                {
+                    return i;
+                }                
+            }
+            return -1;
+        }
+
+
+        public string UdskrivArray(string[] array) 
+        {
+            string t = $"Der er {array.Length} i samlingen\r\n";
+            for (int i = 0; i < array.Length; i++)
+            {
+                t+=i + " " + array[i] + "\r\n";
+            }
+            return t;
+        } 
+
+        public string[] BlandArray(string[] array)
+        {
+      
+            string[] nyt = (string[])array.Clone();
+            Random rnd = new Random();
+
+            for (int c = 0; c < 100; c++)
+            {
+                for (int i = 0; i < nyt.Length; i++)
+                {
+                    int tal = rnd.Next(0, array.Length);
+                    string s = nyt[i];
+                    nyt[i] = nyt[tal];
+                    nyt[tal] = s;
+                } 
+            }
+            return nyt;            
+        }  
+
+
         public string[] HentPartier()
         {
             string[] partier = {

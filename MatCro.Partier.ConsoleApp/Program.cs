@@ -20,16 +20,27 @@ namespace MatCro.Partier.ConsoleApp
 
             
             PartiSpil p = new PartiSpil();
-            string[] partier = p.HentPartier();
-            string[] partiledere = p.HentPartiledere();
+            //string[] partier = p.HentPartier();
+            //string[] partiledere = p.HentPartiledere();
 
 
-            for (int i = 0; i < partier.Length; i++)
-            {
-                Console.WriteLine(partier[i] + " " + partiledere[i]);
-            }
+
+            //string[] partierBlandede = p.BlandArray(partier);
+            //string[] ledereBlandede = p.BlandArray(partiledere);
+            //Console.WriteLine(p.UdskrivArray(partier)); 
+            //Console.WriteLine( );
+            //Console.WriteLine(p.UdskrivArray(partierBlandede));
 
 
+            //string[] t = { "A", "B", "C" };
+            //Console.WriteLine(p.UdskrivArray(t)); 
+            //string[] tb = p.BlandArray(t);
+            //Console.WriteLine(p.UdskrivArray(tb));
+
+            //Console.WriteLine(p.FindStringIArray("x", t));
+
+
+            Console.WriteLine(p.PasserSammen("Venstre", "Jakob Ellemann-ensen"));
 
         }
 

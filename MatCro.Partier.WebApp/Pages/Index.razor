@@ -1,59 +1,206 @@
-﻿@page "/"
+﻿@inject NavigationManager uriHelper;
+@page "/"
 
 <div class="pl-5 pr-5 bg-blue-200">
     <div class=" min-h-screen flex items-center justify-center">
-        <div class="grid grid-cols-2 gap-2">
+        <div class="grid grid-cols-1 gap-2 @spilstartdisplay">
+            <div class="text-center">
+                <div class="m-5 p-5 w-96">
+                    <span class="text-3xl">Partileder-spillet</span>
+                </div>
+                <div class="m-5 p-5 w-96">
+                    Spillet går ud på om at føre et parti og en partileder sammen så hurtigt som muligt. Til venstre
+                    er partier og til højre er partiledere. Klik på en kasse fra hver kolonne.
+                    Logik er kodet i C# af Mathias Cronberg. Brugerflade i web (Blazor) er kodet af Michell og Mathias Cronberg.
+                </div>
+                <div>
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" @onclick="startspil">Start</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 @spildisplay">
             @for (int i = 0; i < partier.Length; i++)
             {
                 int id = i;
-                <div @onclick="@(()=> partiKlik(id))" class="spildiv @partierFarver[i] p-5 rounded text-center">
+                <div @onclick="@(() => partiKlik(id))" class="@partierDisplay[i] spildiv @partierFarver[i] p-5 rounded text-center">
                     @partier[i]
                 </div>
-                <div @onclick="@(()=> lederKlik(id))" class="spildiv @ledereFarver[i] p-5 rounded text-center">
+                <div @onclick="@(() => lederKlik(id))" class="@ledereDisplay[i] spildiv @ledereFarver[i] p-5 rounded text-center">
                     @ledere[i]
                 </div>
             }
         </div>
+        <div class="grid grid-cols-1 gap-2 @spilslutdisplay">
+            <div class="text-center">
+                <div class="m-5 p-5">
+                    Godt klaret! Det tog dig @sekunder minutter og sekunder at gennemføre!
+                </div>
+                <div>
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" @onclick="forfra">Start forfra</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
+
+
 @code{
 
-    public string[] partier { get; set; }
-    public string[] ledere { get; set; }
-    public string[] partierFarver { get; set; }
-    public string[] ledereFarver { get; set; }
-    public int? valgtParti = null;
-    public int? valgtLeder = null;
+
+    string[] partier { get; set; }
+    string[] ledere { get; set; }
+    string[] partierFarver { get; set; }
+    string[] ledereFarver { get; set; }
+    string[] partierDisplay { get; set; }
+    string[] ledereDisplay { get; set; }
+
+
+    int? valgtParti = null;
+    int? valgtLeder = null;
+    string valgtPartiNavn = null;
+    string valgtLederNavn = null;
+    Kerne.PartiSpil p = new Kerne.PartiSpil();
+    System.Timers.Timer timer1sek = new System.Timers.Timer(1000);
+    DateTime? start;
+    string sekunder;
+    string spilslutdisplay = "hidden";
+    string spildisplay = "hidden";
+    string spilstartdisplay = "block";
+
+    void forfra()
+    {
+        uriHelper.NavigateTo(uriHelper.Uri, forceLoad: true);
+    }
+
+
+    void startspil()
+    {
+        spildisplay = "block";
+        spilstartdisplay = "hidden";
+
+        farveParti();
+        farveLeder();
+
+    }
 
     protected override void OnInitialized()
     {
-        Kerne.PartiSpil p = new Kerne.PartiSpil();
-        partier = p.HentPartier();
-        ledere = p.HentPartiledere();
+        spildisplay = "hidden";
+        spilstartdisplay = "block";
+        spilslutdisplay = "hidden";
+        partier = p.BlandArray(p.HentPartier());
+        ledere = p.BlandArray(p.HentPartiledere());
         partierFarver = new string[partier.Length];
         ledereFarver = new string[partier.Length];
-        farveParti();
-        farveLeder();
+        partierDisplay = new string[partier.Length];
+        ledereDisplay = new string[partier.Length];
+        for (int i = 0; i < ledereDisplay.Length; i++)
+        {
+            ledereDisplay[i] = "visible";
+            partierDisplay[i] = "visible";
+        }
+        timer1sek.Elapsed += (s, e) =>
+        {
+            valgtParti = null;
+            valgtLeder = null;
+            farveParti();
+            farveLeder();
+            InvokeAsync(StateHasChanged);
+            timer1sek.Stop();
+
+        };
         base.OnInitialized();
     }
 
     void partiKlik(int id)
     {
+        if (timer1sek.Enabled)
+            return;
+
+        if (!start.HasValue)
+            start = DateTime.Now;
+
         if (id == valgtParti)
             valgtParti = null;
         else
+        {
             valgtParti = id;
+            valgtPartiNavn = partier[id];
+        }
         farveParti();
+        CheckPasser();
     }
 
     void lederKlik(int id)
     {
+        if (timer1sek.Enabled)
+            return;
+
+        if (!start.HasValue)
+            start = DateTime.Now;
+
         if (id == valgtLeder)
             valgtLeder = null;
         else
+        {
             valgtLeder = id;
+            valgtLederNavn = ledere[id];
+        }
         farveLeder();
+        CheckPasser();
+    }
+
+    public void CheckFærdig()
+    {
+        bool færdig = true;
+        for (int i = 0; i < partier.Length; i++)
+        {
+            if (partierDisplay[i] == "visible" || ledereDisplay[i] == "visible")
+            {
+                færdig = false;
+                break;
+            }
+        }
+        if (færdig)
+        {
+            DateTime fors = new DateTime((DateTime.Now - start.Value).Ticks);
+            sekunder = fors.ToString("mm:ss");
+            spildisplay = "hidden";
+            spilslutdisplay = "block";
+
+        }
+
+    }
+
+    public void CheckPasser()
+    {
+
+        if (valgtParti.HasValue && valgtLeder.HasValue)
+        {
+
+            if (p.PasserSammen(valgtPartiNavn, valgtLederNavn))
+            {
+                partierDisplay[valgtParti.Value] = "invisible";
+                ledereDisplay[valgtLeder.Value] = "invisible";
+                valgtLeder = null;
+                valgtParti = null;
+                farveLeder();
+                farveParti();
+                timer1sek.Stop();
+            }
+            else
+            {
+                ledereFarver[valgtLeder.Value] = "bg-red-100";
+                partierFarver[valgtParti.Value] = "bg-red-100";
+                InvokeAsync(StateHasChanged);
+                timer1sek.Start();
+            }
+
+        }
+        CheckFærdig();
+
     }
 
     public void farveParti()
